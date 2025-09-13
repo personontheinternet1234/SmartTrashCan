@@ -3,7 +3,7 @@ from CameraController import CameraController
 
 if __name__ == "__main__":
     servoController = ServoController()
-    servoController.run()
+    servoController.start_threads()
 
     cameraController = CameraController(servoController,"lol","lol")
-    cameraController.run()
+    cameraController.start_threads()

@@ -8,18 +8,18 @@ class CameraController:
     def __init__(self, servoController, model_path, labels_path):
         self.cap = cv2.VideoCapture(0)
         self.servoController = servoController
-        self.running = False
+        self.dispose = False
 
         self.interpreter = tflite.Interpreter(model_path=model_path)
         self.interpreter.allocate_tensors()
 
-        # Input & output details
         self.input_details = self.interpreter.get_input_details()
         self.output_details = self.interpreter.get_output_details()
 
-        # Load labels
         with open(labels_path, "r") as f:
             self.labels = [line.strip() for line in f.readlines()]
+
+        self.running = False
 
     def start_threads(self):
         if not self.cap.isOpened():
@@ -37,21 +37,21 @@ class CameraController:
     def take_picture_and_classify(self):
         ret, frame = self.cap.read()
         if ret:
-            self.classify(frame)
+            class_data = self.classify(frame)
+            if class_data[1] > 0.3:
+                self.servoController.status = class_data[0]
+
         else:
             print("Camera Error - Can't find it?")
 
     def classify(self, frame):
         input_data = self.preprocess(frame)
 
-        # Set tensor
         self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
         self.interpreter.invoke()
 
-        # Get predictions
         output_data = self.interpreter.get_tensor(self.output_details[0]['index'])[0]
 
-        # Argmax → predicted class
         predicted_id = int(np.argmax(output_data))
         confidence = float(output_data[predicted_id])
 

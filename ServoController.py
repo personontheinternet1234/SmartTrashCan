@@ -1,5 +1,6 @@
 import time
 from adafruit_servokit import ServoKit
+import threading
 
 class ServoController:
 
@@ -10,37 +11,34 @@ class ServoController:
         self.angle2 = 0
         self.status = None
 
-        self.servo1 = kit.servo[0]
-        self.servo2 = kit.servo[1]
+        self.servos = [CustomServo(kit.servo[0]), CustomServo(kit.servo[1])]
 
-        self.servo1.angle = self.angle1
-        self.servo2.angle = self.angle2
-
-    def sefAngle1(self, angle):
+    def setAngle(self, angle, channel):
         if angle < 0 or angle > 180:
             return
-        
-        self.angle1 = angle
-        self.servo1.angle = self.angle1
-    
-    def setAngle2(self, angle):
-        if angle < 0 or angle > 180:
-            return
-        
-        self.angle2 = angle
-        self.servo2.angle = self.angle2
+
+        self.servos[channel].servo.angle = angle
+        self.servos[channel].angle = angle
 
     def updatePlate(self):
         #add actual plate values here
         if self.status == "recycle":
-            self.setAngle1(0)
-            self.setAngle2(90)
+            self.setAngle(0,0)
+            self.setAngle(90,1)
 
         elif self.status == "trash":
-            self.setAngle1(90)
-            self.setAngle2(0)
-        
+            self.setAngle(90, 0)
+            self.setAngle(0, 1)
+
+    def start_threads(self):
+        threading.Thread(target=self.run, daemon=True).start()
+        print("Servo Thread Started!")
+
     def run(self):
         ...
 
-        
+class CustomServo:
+
+    def __init__(self, servo):
+        self.angle = None
+        self.servo = servo
