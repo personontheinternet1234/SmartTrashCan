@@ -8,6 +8,7 @@ class CameraController:
     def __init__(self, servoController, model_path, labels_path):
         self.cap = cv2.VideoCapture(0)
         self.servoController = servoController
+        self.latest_frame = None
         self.dispose = False
 
         self.interpreter = tflite.Interpreter(model_path=model_path)
@@ -36,13 +37,13 @@ class CameraController:
 
     def take_picture_and_classify(self):
         ret, frame = self.cap.read()
+        self.latest_frame = frame
+
         if ret:
             class_data = self.classify(frame)
             if class_data[1] > 0.3:
                 self.servoController.status = class_data[0]
 
-        else:
-            print("Camera Error - Can't find it?")
 
     def classify(self, frame):
         input_data = self.preprocess(frame)

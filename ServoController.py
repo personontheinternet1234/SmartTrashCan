@@ -23,8 +23,8 @@ class ServoController:
     def updatePlate(self):
         #add actual plate values here
         if self.status == "recycle":
-            self.setAngle(0,0)
-            self.setAngle(90,1)
+            self.setAngle(0, 0)
+            self.setAngle(90, 1)
 
         elif self.status == "trash":
             self.setAngle(90, 0)
