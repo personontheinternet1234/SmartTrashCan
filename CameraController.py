@@ -17,8 +17,8 @@ class CameraController:
         # self.input_details = self.interpreter.get_input_details()
         # self.output_details = self.interpreter.get_output_details()
 
-        with open(labels_path, "r") as f:
-            self.labels = [line.strip() for line in f.readlines()]
+        # with open(labels_path, "r") as f:
+        #     self.labels = [line.strip() for line in f.readlines()]
 
         self.running = False
 
