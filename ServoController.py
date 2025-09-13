@@ -6,7 +6,8 @@ class ServoController:
 
     def __init__(self):
         kit = ServoKit(channels=16, frequency=333)
-        self.status = None
+        self.status = "none"
+        self.disposing = False
 
         self.angleOffset = 25
         self.neutralAngle = 90
@@ -21,26 +22,23 @@ class ServoController:
         self.servos[channel].angle = angle
 
     def updatePlate(self):
-        if self.status == "recycle":
-            self.setAngle(self.neutralAngle - self.angleOffset, 0)
-            self.setAngle(self.neutralAngle + self.angleOffset, 1)
-            self.setAngle(self.neutralAngle + self.angleOffset, 2)
-
-        elif self.status == "food":
+        if self.status == "trash":
             self.setAngle(self.neutralAngle + self.angleOffset, 0)
             self.setAngle(self.neutralAngle - self.angleOffset, 1)
+            self.setAngle(self.neutralAngle - self.angleOffset, 2)
+        elif self.status == "recycle":
+            self.setAngle(self.neutralAngle - self.angleOffset, 0)
+            self.setAngle(self.neutralAngle + self.angleOffset, 1)
+            self.setAngle(self.neutralAngle - self.angleOffset, 2)
+        elif self.status == "food":
+            self.setAngle(self.neutralAngle - self.angleOffset, 0)
+            self.setAngle(self.neutralAngle - self.angleOffset, 1)
             self.setAngle(self.neutralAngle + self.angleOffset, 2)
-
-        elif self.status == "neutral":
+        elif self.status == "none":
+            # no need to do anything
             self.setAngle(self.neutralAngle, 0)
             self.setAngle(self.neutralAngle, 1)
             self.setAngle(self.neutralAngle, 2)
-
-        else:
-            #trash
-            self.setAngle(self.neutralAngle + self.angleOffset, 0)
-            self.setAngle(self.neutralAngle + self.angleOffset, 1)
-            self.setAngle(self.neutralAngle - self.angleOffset, 2)
 
 
     def start_threads(self):
@@ -48,7 +46,13 @@ class ServoController:
         print("Servo Thread Started!")
 
     def run(self):
-        ...
+        while True:
+            if self.status != "none" and self.disposing == False:
+                self.disposing = True
+                self.updatePlate()
+                time.sleep(1)
+                self.disposing = False
+
 
 class CustomServo:
     def __init__(self, servo):

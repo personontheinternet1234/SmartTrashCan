@@ -1,27 +1,23 @@
 import cv2
 import numpy as np
-import tensorflow.lite as tflite
 import threading
 import time
+import re
+import os
+from pycoral.utils.dataset import read_label_file
+from pycoral.utils.edgetpu import make_interpreter
+from pycoral.adapters import common
+from pycoral.adapters import classify
+
 
 class CameraController:
-    def __init__(self, servoController, model_path, labels_path):
+    def __init__(self, servoController, modelPath, labelPath):
         self.cap = cv2.VideoCapture(0, cv2.CAP_ANY)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
         self.servoController = servoController
         self.latest_frame = None
-        self.dispose = False
-
-        # self.interpreter = tflite.Interpreter(model_path=model_path)
-        # self.interpreter.allocate_tensors()
-
-        # self.input_details = self.interpreter.get_input_details()
-        # self.output_details = self.interpreter.get_output_details()
-
-        # with open(labels_path, "r") as f:
-        #     self.labels = [line.strip() for line in f.readlines()]
 
         self.running = False
 
@@ -46,37 +42,34 @@ class CameraController:
         #     if class_data[1] > 0.3:
         #         self.servoController.status = class_data[0]
 
+    def classifyImage(interpreter, image):
+        size = common.input_size(interpreter)
+        common.set_input(interpreter, cv2.resize(image, size, fx=0, fy=0,
+                                                interpolation=cv2.INTER_CUBIC))
+        interpreter.invoke()
+        return classify.get_classes(interpreter)
 
-    # def classify(self, frame):
-    #     input_data = self.preprocess(frame)
+    def main():
+        # Load your model onto the TF Lite Interpreter
+        interpreter = make_interpreter(modelPath)
+        interpreter.allocate_tensors()
+        labels = read_label_file(labelPath)
 
-    #     self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
-    #     self.interpreter.invoke()
+        cap = cv2.VideoCapture(0)
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
 
-    #     output_data = self.interpreter.get_tensor(self.output_details[0]['index'])[0]
+            # Flip image so it matches the training input
+            frame = cv2.flip(frame, 1)
 
-    #     predicted_id = int(np.argmax(output_data))
-    #     confidence = float(output_data[predicted_id])
+            # Classify and display image
+            results = classifyImage(interpreter, frame)
+            cv2.imshow('frame', frame)
+            print(f'Label: {labels[results[0].id]}, Score: {results[0].score}')
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
-    #     return self.labels[predicted_id], confidence
-
-    # def preprocess(self, frame):
-    #     # Get model input shape (e.g., (1, 224, 224, 3))
-    #     input_shape = self.input_details[0]['shape']
-    #     height, width = input_shape[1], input_shape[2]
-
-    #     # Resize and convert to RGB
-    #     resized = cv2.resize(frame, (width, height))
-    #     rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)
-
-    #     # Normalize to [0,1] float32
-    #     input_data = np.expand_dims(rgb.astype(np.float32) / 255.0, axis=0)
-    #     return input_data
-
-    def stop(self):
-        self.running = False
-        self.release()
-
-    def release(self):
-        if self.cap.isOpened():
-            self.cap.release()
+        cap.release()
+        cv2.destroyAllWindows()
