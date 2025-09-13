@@ -11,11 +11,11 @@ class CameraController:
         self.latest_frame = None
         self.dispose = False
 
-        self.interpreter = tflite.Interpreter(model_path=model_path)
-        self.interpreter.allocate_tensors()
+        # self.interpreter = tflite.Interpreter(model_path=model_path)
+        # self.interpreter.allocate_tensors()
 
-        self.input_details = self.interpreter.get_input_details()
-        self.output_details = self.interpreter.get_output_details()
+        # self.input_details = self.interpreter.get_input_details()
+        # self.output_details = self.interpreter.get_output_details()
 
         with open(labels_path, "r") as f:
             self.labels = [line.strip() for line in f.readlines()]
@@ -45,31 +45,31 @@ class CameraController:
         #         self.servoController.status = class_data[0]
 
 
-    def classify(self, frame):
-        input_data = self.preprocess(frame)
+    # def classify(self, frame):
+    #     input_data = self.preprocess(frame)
 
-        self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
-        self.interpreter.invoke()
+    #     self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
+    #     self.interpreter.invoke()
 
-        output_data = self.interpreter.get_tensor(self.output_details[0]['index'])[0]
+    #     output_data = self.interpreter.get_tensor(self.output_details[0]['index'])[0]
 
-        predicted_id = int(np.argmax(output_data))
-        confidence = float(output_data[predicted_id])
+    #     predicted_id = int(np.argmax(output_data))
+    #     confidence = float(output_data[predicted_id])
 
-        return self.labels[predicted_id], confidence
+    #     return self.labels[predicted_id], confidence
 
-    def preprocess(self, frame):
-        # Get model input shape (e.g., (1, 224, 224, 3))
-        input_shape = self.input_details[0]['shape']
-        height, width = input_shape[1], input_shape[2]
+    # def preprocess(self, frame):
+    #     # Get model input shape (e.g., (1, 224, 224, 3))
+    #     input_shape = self.input_details[0]['shape']
+    #     height, width = input_shape[1], input_shape[2]
 
-        # Resize and convert to RGB
-        resized = cv2.resize(frame, (width, height))
-        rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)
+    #     # Resize and convert to RGB
+    #     resized = cv2.resize(frame, (width, height))
+    #     rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)
 
-        # Normalize to [0,1] float32
-        input_data = np.expand_dims(rgb.astype(np.float32) / 255.0, axis=0)
-        return input_data
+    #     # Normalize to [0,1] float32
+    #     input_data = np.expand_dims(rgb.astype(np.float32) / 255.0, axis=0)
+    #     return input_data
 
     def stop(self):
         self.running = False
