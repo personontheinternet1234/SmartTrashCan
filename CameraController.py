@@ -6,7 +6,7 @@ import time
 
 class CameraController:
     def __init__(self, servoController, model_path, labels_path):
-        self.cap = cv2.VideoCapture(1, cv2.CAP_ANY)
+        self.cap = cv2.VideoCapture(0, cv2.CAP_ANY)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
