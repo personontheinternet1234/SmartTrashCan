@@ -36,7 +36,6 @@ class CameraController:
     def run(self):
         while self.running:
             self.take_picture_and_classify()
-            time.sleep(1)
 
     def take_picture_and_classify(self):
         ret, frame = self.cap.read()

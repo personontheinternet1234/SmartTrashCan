@@ -32,7 +32,6 @@ if __name__ == "__main__":
     servoController.start_threads()
 
     cameraController = CameraController(servoController,"lol","lol")
-    time.sleep(1)
     cameraController.start_threads()
 
     app.run(host='172.20.10.7', port=5000, debug=False)
