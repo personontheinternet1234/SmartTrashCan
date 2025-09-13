@@ -6,7 +6,7 @@ import time
 
 class CameraController:
     def __init__(self, servoController, model_path, labels_path):
-        self.cap = cv2.VideoCapture(0, cv2.CAP_MSMF)
+        self.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
         self.servoController = servoController
         self.latest_frame = None
         self.dispose = False
