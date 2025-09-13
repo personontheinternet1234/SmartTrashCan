@@ -1,6 +1,6 @@
 from ServoController import ServoController
 from CameraController import CameraController
-from flask import Flask, Response
+from flask import Flask, Response, render_template
 import time
 import cv2
 
@@ -20,7 +20,7 @@ def generate_frames():
 
 @app.route('/')
 def index():
-    return "<h1>Live Video Stream</h1><img src='/video_feed'>"
+    return render_template('index.html')
 
 @app.route('/video_feed')
 def video_feed():
