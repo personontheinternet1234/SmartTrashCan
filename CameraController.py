@@ -39,10 +39,10 @@ class CameraController:
         ret, frame = self.cap.read()
         self.latest_frame = frame
 
-        if ret:
-            class_data = self.classify(frame)
-            if class_data[1] > 0.3:
-                self.servoController.status = class_data[0]
+        # if ret:
+        #     class_data = self.classify(frame)
+        #     if class_data[1] > 0.3:
+        #         self.servoController.status = class_data[0]
 
 
     def classify(self, frame):
