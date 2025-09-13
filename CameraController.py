@@ -19,6 +19,10 @@ class CameraController:
         self.servoController = servoController
         self.latest_frame = None
 
+        interpreter = make_interpreter(modelPath)
+        interpreter.allocate_tensors()
+        labels = read_label_file(labelPath)
+
         self.running = False
 
     def start_threads(self):
@@ -37,39 +41,16 @@ class CameraController:
         ret, frame = self.cap.read()
         self.latest_frame = frame
 
-        # if ret:
-        #     class_data = self.classify(frame)
-        #     if class_data[1] > 0.3:
-        #         self.servoController.status = class_data[0]
+        if ret:
+            class_data = self.classifyImage(frame)
+            if class_data[1] > 0.3:
+                self.servoController.status = class_data[0]
 
-    def classifyImage(interpreter, image):
-        size = common.input_size(interpreter)
-        common.set_input(interpreter, cv2.resize(image, size, fx=0, fy=0,
+    def classifyImage(self, image):
+        size = common.input_size(self.interpreter)
+        common.set_input(self.interpreter, cv2.resize(image, size, fx=0, fy=0,
                                                 interpolation=cv2.INTER_CUBIC))
-        interpreter.invoke()
-        return classify.get_classes(interpreter)
+        self.interpreter.invoke()
+        return classify.get_classes(self.interpreter)
 
-    def main():
-        # Load your model onto the TF Lite Interpreter
-        interpreter = make_interpreter(modelPath)
-        interpreter.allocate_tensors()
-        labels = read_label_file(labelPath)
-
-        cap = cv2.VideoCapture(0)
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
-
-            # Flip image so it matches the training input
-            frame = cv2.flip(frame, 1)
-
-            # Classify and display image
-            results = classifyImage(interpreter, frame)
-            cv2.imshow('frame', frame)
-            print(f'Label: {labels[results[0].id]}, Score: {results[0].score}')
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-        cap.release()
-        cv2.destroyAllWindows()
+    
