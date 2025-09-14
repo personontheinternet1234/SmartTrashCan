@@ -5,9 +5,9 @@ import time
 import re
 import os
 from pycoral.utils.dataset import read_label_file
-from pycoral.utils.edgetpu import make_interpreter
 from pycoral.adapters import common
 from pycoral.adapters import classify
+import tflite_runtime.interpreter as tflite  # Add this import
 
 
 class CameraController:
@@ -19,7 +19,7 @@ class CameraController:
         self.servoController = servoController
         self.latest_frame = None
 
-        self.interpreter = make_interpreter(modelPath)
+        self.interpreter = tflite.Interpreter(modelPath)
         self.interpreter.allocate_tensors()
         labels = read_label_file(labelPath)
 
