@@ -9,6 +9,7 @@
             --trash-color: #e53935;
             --recycle-color: #43a047;
             --food-color: #ffb300;
+            --none-color: #AAAAAA;
             --bg: #393333;
         }
 
@@ -99,6 +100,11 @@
             color: black;
         }
 
+        .detected-none {
+            background-color: var(--none-color);
+            color: black;
+        }
+
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -175,6 +181,7 @@
                 {% if category == 'Trash' %}detected-trash
                 {% elif category == 'Recycle' %}detected-recycle
                 {% elif category == 'Food Waste' %}detected-food
+                {% elif category == 'None' %}detected-none
                 {% endif %}">
                 {{ category }}
             </div>

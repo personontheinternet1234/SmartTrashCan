@@ -1,6 +1,6 @@
 from ServoController import ServoController
 from CameraController import CameraController
-from flask import Flask, Response, render_template
+from flask import Flask, Response, render_template, jsonify
 import time
 import cv2
 
@@ -20,6 +20,10 @@ def generate_frames():
 
 @app.route('/')
 def index():
+    return render_template('index.html')
+
+@app.route('/category')
+def get_category():
     status = servoController.status
 
     if status == "trash":
@@ -31,7 +35,7 @@ def index():
     else:
         category = "Unknown"
 
-    return render_template('index.html', category=category)
+    return jsonify({"category": category})
 
 @app.route('/video_feed')
 def video_feed():
