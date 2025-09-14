@@ -4,15 +4,11 @@ import threading
 import time
 import re
 import os
-# from pycoral.utils.dataset import read_label_file
-# from pycoral.utils.edgetpu import make_interpreter
-# from pycoral.adapters import common
-# from pycoral.adapters import classify
+from pycoral.utils.dataset import read_label_file
+from pycoral.utils.edgetpu import make_interpreter
+from pycoral.adapters import common
+from pycoral.adapters import classify
 
-from keras.models import load_model  # TensorFlow is required for Keras to work
-
-# Disable scientific notation for clarity
-np.set_printoptions(suppress=True)
 
 class CameraController:
     def __init__(self, servoController, modelPath, labelPath):
@@ -23,8 +19,9 @@ class CameraController:
         self.servoController = servoController
         self.latest_frame = None
 
-        self.model = load_model(modelPath, compile=False)
-        self.class_names = open(labelPath, "r").readlines()
+        interpreter = make_interpreter(modelPath)
+        interpreter.allocate_tensors()
+        labels = read_label_file(labelPath)
 
         self.running = False
 
@@ -45,16 +42,15 @@ class CameraController:
         self.latest_frame = frame
 
         if ret:
-            image = cv2.resize(frame, (224, 224), interpolation=cv2.INTER_AREA)
-            image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
-            image = (image / 127.5) - 1
+            class_data = self.classifyImage(frame)
+            if class_data[1] > 0.3:
+                self.servoController.status = class_data[0]
 
-            prediction = self.model.predict(image)
-            index = np.argmax(prediction)
-            class_name = self.class_names[index]
-            confidence_score = prediction[0][index]
+    def classifyImage(self, image):
+        size = common.input_size(self.interpreter)
+        common.set_input(self.interpreter, cv2.resize(image, size, fx=0, fy=0,
+                                                interpolation=cv2.INTER_CUBIC))
+        self.interpreter.invoke()
+        return classify.get_classes(self.interpreter)
 
-            label = class_name[2:]
-            confidence = np.round(confidence_score * 100)[:-2]
-            if confidence > 0.3:
-                self.servoController.status = label
+    
