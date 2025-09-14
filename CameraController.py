@@ -5,9 +5,9 @@ import time
 import re
 import os
 from pycoral.utils.dataset import read_label_file
-from pycoral.utils.edgetpu import make_interpreter
 from pycoral.adapters import common
 from pycoral.adapters import classify
+import tflite_runtime.interpreter as tflite  # Add this import
 
 
 class CameraController:
@@ -19,8 +19,8 @@ class CameraController:
         self.servoController = servoController
         self.latest_frame = None
 
-        interpreter = make_interpreter(modelPath)
-        interpreter.allocate_tensors()
+        self.interpreter = tflite.Interpreter(modelPath)
+        self.interpreter.allocate_tensors()
         labels = read_label_file(labelPath)
 
         self.running = False
@@ -43,8 +43,9 @@ class CameraController:
 
         if ret:
             class_data = self.classifyImage(frame)
-            if class_data[1] > 0.3:
-                self.servoController.status = class_data[0]
+            if class_data[0].score > 0.1:
+                self.servoController.status = class_data[0].id
+                print(self.servoController.status)
 
     def classifyImage(self, image):
         size = common.input_size(self.interpreter)
@@ -52,5 +53,3 @@ class CameraController:
                                                 interpolation=cv2.INTER_CUBIC))
         self.interpreter.invoke()
         return classify.get_classes(self.interpreter)
-
-    
