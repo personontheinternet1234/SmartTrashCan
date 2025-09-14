@@ -27,7 +27,9 @@ class CameraController:
         self.save_interval = 1
         self.last_save_time = 0
         self.image_counter = 0
-
+        if not os.path.exists(self.training_folder):
+            os.makedirs(self.training_folder)
+            
         self.running = False
 
     def start_threads(self):
