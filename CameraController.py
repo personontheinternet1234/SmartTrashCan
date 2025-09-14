@@ -21,7 +21,7 @@ class CameraController:
 
         self.interpreter = tflite.Interpreter(modelPath)
         self.interpreter.allocate_tensors()
-        labels = read_label_file(labelPath)
+        self.labels = read_label_file(labelPath)
 
         self.running = False
 
@@ -44,8 +44,8 @@ class CameraController:
         if ret:
             class_data = self.classifyImage(frame)
             if class_data[0].score > 0.1:
-                self.servoController.status = class_data[0].id
-                print(self.servoController.status)
+                self.servoController.status = self.labels[class_data[0].id]
+                print(self.labels[self.servoController.status])
 
     def classifyImage(self, image):
         size = common.input_size(self.interpreter)
