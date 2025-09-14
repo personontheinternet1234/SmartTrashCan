@@ -208,8 +208,20 @@
             console.error("Failed to fetch category", err);
         }
     }
+    async function updateSwipes() {
+        try {
+            const response = await fetch("/disposals");
+            const data = await response.json();
+            document.getElementById("disposals-count").textContent = data.disposals;
+        } catch (err) {
+            console.error("Failed to fetch disposals", err);
+        }
+    }
     setInterval(updateCategory, 50);
     updateCategory();
+    updateSwipes();
+    setInterval(updateSwipes, 5000); // Update every 5 seconds
+    
     </script>
 
     <footer>

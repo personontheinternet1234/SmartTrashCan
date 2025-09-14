@@ -33,6 +33,10 @@ def get_category():
         category = "None"
     return jsonify({"category": category})
 
+@app.route('/disposals')
+def get_disposals():
+    return jsonify({"disposals": servoController.disposals})
+
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(),
