@@ -14,6 +14,10 @@ class ServoController:
 
         self.servos = [CustomServo(kit.servo[0]), CustomServo(kit.servo[1]), CustomServo(kit.servo[2])]
 
+        self.setAngle(self.neutralAngle, 0)
+        self.setAngle(self.neutralAngle, 1)
+        self.setAngle(self.neutralAngle, 2)
+
     def setAngle(self, angle, channel):
         if angle < 0 or angle > 180:
             return
