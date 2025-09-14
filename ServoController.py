@@ -10,7 +10,7 @@ class ServoController:
         self.status = "none"
         self.disposing = False
 
-        self.angleOffset = 20
+        self.angleOffset = 30
         self.neutralAngle = 90
 
         self.servos = [CustomServo(kit.servo[0]), CustomServo(kit.servo[1]), CustomServo(kit.servo[2])]
@@ -42,7 +42,7 @@ class ServoController:
 
     def updatePlate(self):
         if self.status == "trash":
-            self.setAngle(self.neutralAngle - self.angleOffset, 0)
+            self.setAngle(self.neutralAngle + self.angleOffset, 0)
             self.setAngle(self.neutralAngle + self.angleOffset, 1)
             self.setAngle(self.neutralAngle - self.angleOffset, 2)
             self.disposals += 1
@@ -50,12 +50,12 @@ class ServoController:
                 f.write(str(self.disposals))
         elif self.status == "recycle":
             self.setAngle(self.neutralAngle - self.angleOffset, 0)
-            self.setAngle(self.neutralAngle - self.angleOffset, 1)
+            self.setAngle(self.neutralAngle + self.angleOffset, 1)
             self.setAngle(self.neutralAngle + self.angleOffset, 2)
         elif self.status == "food":
             self.setAngle(self.neutralAngle + self.angleOffset, 0)
             self.setAngle(self.neutralAngle - self.angleOffset, 1)
-            self.setAngle(self.neutralAngle - self.angleOffset, 2)
+            self.setAngle(self.neutralAngle + self.angleOffset, 2)
         elif self.status == "none":
             # no need to do anything
             self.setAngle(self.neutralAngle, 0)
