@@ -1,6 +1,7 @@
 import time
 from adafruit_servokit import ServoKit
 import threading
+import os
 
 class ServoController:
 
@@ -18,6 +19,15 @@ class ServoController:
         self.setAngle(self.neutralAngle, 1)
         self.setAngle(self.neutralAngle, 2)
 
+        self.filename = "disposals.txt"
+        if os.path.exists(self.filename):
+            with open(self.filename, "r") as f:
+                self.disposals = (int) (f.read().strip())
+        else:
+            with open(self.filename, "w") as f:
+                f.write("0")
+
+
     def setAngle(self, angle, channel):
         if angle == None:
             self.servos[channel].angle = None
@@ -33,6 +43,9 @@ class ServoController:
             self.setAngle(self.neutralAngle + self.angleOffset, 0)
             self.setAngle(self.neutralAngle + self.angleOffset, 1)
             self.setAngle(self.neutralAngle - self.angleOffset, 2)
+            self.disposals += 1
+            with open(self.filename, "w") as f:
+                f.write(str(self.disposals))
         elif self.status == "recycle":
             self.setAngle(self.neutralAngle - self.angleOffset, 0)
             self.setAngle(self.neutralAngle + self.angleOffset, 1)
@@ -57,7 +70,7 @@ class ServoController:
             if self.disposing == False:
                 self.disposing = True
                 self.updatePlate()
-                time.sleep(1)
+                time.sleep(2)
                 self.disposing = False
 
 
