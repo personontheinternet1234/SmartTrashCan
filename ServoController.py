@@ -54,7 +54,7 @@ class ServoController:
 
     def run(self):
         while True:
-            if self.status != "none" and self.disposing == False:
+            if self.disposing == False:
                 self.disposing = True
                 self.updatePlate()
                 time.sleep(1)
