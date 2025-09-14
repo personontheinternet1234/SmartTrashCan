@@ -28,10 +28,15 @@ def video_feed():
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == "__main__":
-    servoController = ServoController()
-    servoController.start_threads()
+    try:
+        servoController = ServoController()
+        servoController.start_threads()
 
-    cameraController = CameraController(servoController, "model_edgetpu.tflite", "labels.txt")
-    cameraController.start_threads()
+        cameraController = CameraController(servoController, "model_edgetpu.tflite", "labels.txt")
+        cameraController.start_threads()
 
-    app.run(host='172.20.10.7', port=5000, debug=False)
+        app.run(host='172.20.10.7', port=5000, debug=False)
+    except KeyboardInterrupt:
+        servoController.setAngle(None, 0)
+        servoController.setAngle(None, 1)
+        servoController.setAngle(None, 2)
