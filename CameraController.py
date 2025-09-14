@@ -19,8 +19,8 @@ class CameraController:
         self.servoController = servoController
         self.latest_frame = None
 
-        interpreter = make_interpreter(modelPath)
-        interpreter.allocate_tensors()
+        self.interpreter = make_interpreter(modelPath)
+        self.interpreter.allocate_tensors()
         labels = read_label_file(labelPath)
 
         self.running = False
@@ -52,5 +52,3 @@ class CameraController:
                                                 interpolation=cv2.INTER_CUBIC))
         self.interpreter.invoke()
         return classify.get_classes(self.interpreter)
-
-    
