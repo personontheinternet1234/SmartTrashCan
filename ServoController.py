@@ -10,7 +10,7 @@ class ServoController:
         self.status = "none"
         self.disposing = False
 
-        self.angleOffset = 30
+        self.angleOffset = 20
         self.neutralAngle = 90
 
         self.servos = [CustomServo(kit.servo[0]), CustomServo(kit.servo[1]), CustomServo(kit.servo[2])]
