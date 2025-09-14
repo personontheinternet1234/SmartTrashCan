@@ -45,7 +45,7 @@ class CameraController:
             class_data = self.classifyImage(frame)
             if class_data[0].score > 0.1:
                 self.servoController.status = self.labels[class_data[0].id]
-                print(self.labels[self.servoController.status])
+                print(self.servoController.status)
 
     def classifyImage(self, image):
         size = common.input_size(self.interpreter)
