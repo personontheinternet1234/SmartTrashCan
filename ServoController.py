@@ -10,7 +10,7 @@ class ServoController:
         self.status = "none"
         self.disposing = False
 
-        self.angleOffset = 40
+        self.angleOffset = 50
         self.neutralAngle = 90
 
         self.servos = [CustomServo(kit.servo[0]), CustomServo(kit.servo[1]), CustomServo(kit.servo[2])]
@@ -44,18 +44,18 @@ class ServoController:
         if self.status == "trash":
             self.setAngle(self.neutralAngle + self.angleOffset, 0)
             self.setAngle(self.neutralAngle - self.angleOffset, 1)
-            # self.setAngle(self.neutralAngle - self.angleOffset, 2)
+            self.setAngle(self.neutralAngle, 2)
             self.disposals += 1
             with open(self.filename, "w") as f:
                 f.write(str(self.disposals))
         elif self.status == "recycle":
             self.setAngle(self.neutralAngle - self.angleOffset, 0)
-            self.setAngle(self.neutralAngle + self.angleOffset, 1)
+            self.setAngle(self.neutralAngle, 1)
             self.setAngle(self.neutralAngle + self.angleOffset, 2)
         elif self.status == "food":
-            self.setAngle(self.neutralAngle + self.angleOffset, 0)
-            self.setAngle(self.neutralAngle - self.angleOffset, 1)
-            self.setAngle(self.neutralAngle + self.angleOffset, 2)
+            self.setAngle(self.neutralAngle, 0)
+            self.setAngle(self.neutralAngle + self.angleOffset, 1)
+            self.setAngle(self.neutralAngle - self.angleOffset, 2)
         elif self.status == "none":
             # no need to do anything
             self.setAngle(self.neutralAngle, 0)
@@ -68,9 +68,6 @@ class ServoController:
         print("Servo Thread Started!")
 
     def run(self):
-        while True:
-            self.setAngle(self.neutralAngle + self.angleOffset, 0)
-            self.setAngle(self.neutralAngle - self.angleOffset, 1)
 
         while True:
             if self.disposing == False:
