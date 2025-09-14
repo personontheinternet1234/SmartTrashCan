@@ -20,6 +20,7 @@ class ServoController:
         self.setAngle(self.neutralAngle, 2)
 
         self.filename = "disposals.txt"
+        self.disposals = 0
         if os.path.exists(self.filename):
             with open(self.filename, "r") as f:
                 self.disposals = (int) (f.read().strip())
