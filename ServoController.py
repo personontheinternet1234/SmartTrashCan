@@ -19,6 +19,9 @@ class ServoController:
         self.setAngle(self.neutralAngle, 2)
 
     def setAngle(self, angle, channel):
+        if angle == None:
+            self.servos[channel].angle = None
+
         if angle < 0 or angle > 180:
             return
 

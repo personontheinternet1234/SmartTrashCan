@@ -32,7 +32,7 @@ if __name__ == "__main__":
         servoController = ServoController()
         servoController.start_threads()
 
-        cameraController = CameraController(servoController, "model_edgetpu.tflite", "labels.txt")
+        cameraController = CameraController(servoController, "model.tflite", "labels.txt")
         cameraController.start_threads()
 
         app.run(host='172.20.10.7', port=5000, debug=False)
