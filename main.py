@@ -33,7 +33,7 @@ def get_category():
     elif status == "food":
         category = "Food Waste"
     else:
-        category = "none"
+        category = "None"
 
     return jsonify({"category": category})
 
