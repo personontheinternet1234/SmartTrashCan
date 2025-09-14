@@ -69,11 +69,6 @@ class ServoController:
 
     def run(self):
         while True:
-            self.setAngle(self.neutralAngle + self.angleOffset, 0)
-            self.setAngle(self.neutralAngle - self.angleOffset, 1)
-            self.setAngle(self.neutralAngle + self.angleOffset, 2)
-
-        while True:
             if self.disposing == False:
                 self.disposing = True
                 self.updatePlate()
