@@ -18,9 +18,23 @@ def generate_frames():
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
+            if servoController.status == "trash":
+
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    status = servoController.status
+
+    if status == "trash":
+        category = "Trash"
+    elif status == "recycle":
+        category = "Recycle"
+    elif status == "food":
+        category = "Food Waste"
+    else:
+        category = "Unknown"
+
+    return render_template('index.html', category=category)
 
 @app.route('/video_feed')
 def video_feed():
@@ -28,15 +42,14 @@ def video_feed():
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == "__main__":
-    try:
-        servoController = ServoController()
-        servoController.start_threads()
+    servoController = ServoController()
+    servoController.start_threads()
 
-        cameraController = CameraController(servoController, "model.tflite", "labels.txt")
-        cameraController.start_threads()
+    cameraController = CameraController(servoController, "model.tflite", "labels.txt")
+    cameraController.start_threads()
 
-        app.run(host='172.20.10.7', port=5000, debug=False)
-    except KeyboardInterrupt:
-        servoController.setAngle(None, 0)
-        servoController.setAngle(None, 1)
-        servoController.setAngle(None, 2)
+    app.run(host='172.20.10.7', port=5000, debug=False)
+
+    servoController.setAngle(None, 0)
+    servoController.setAngle(None, 1)
+    servoController.setAngle(None, 2)

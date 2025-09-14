@@ -43,7 +43,7 @@ class CameraController:
 
         if ret:
             class_data = self.classifyImage(frame)
-            if class_data[0].score > 0.2:
+            if class_data[0].score > 0.4:
                 self.servoController.status = self.labels[class_data[0].id]
                 print(self.servoController.status)
             else:
