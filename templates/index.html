@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Sorting Station</title>
+    <style>
+        :root {
+            --trash-color: #e53935;
+            --recycle-color: #43a047;
+            --food-color: #ffb300;
+            --bg: #393333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(90deg, #241e1e, #352b2d);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            box-shadow: 0px 3px 10px rgba(0,0,0,0.15);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        /* NEW: container for both video + stats side by side */
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .main-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgb(36, 30, 30);
+            border-radius: 20px;
+            box-shadow: 0px 6px 15px rgba(0,0,0,0.08);
+            padding: 2rem;
+            flex: 2;
+        }
+
+        .video-wrapper img {
+            border-radius: 20px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-pannel {
+            display: flex;
+            flex-direction: column;
+            background: rgb(36, 30, 30);
+            border-radius: 20px;
+            box-shadow: 0px 6px 15px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            max-width: 350px;
+            flex: 1;
+        }
+
+        .detected-category {
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .detected-trash {
+            background-color: var(--trash-color);
+            color: white;
+        }
+
+        .detected-recycle {
+            background-color: var(--recycle-color);
+            color: white;
+        }
+
+        .detected-food {
+            background-color: var(--food-color);
+            color: black;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 1rem;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .card h3 {
+            margin: 0.3rem 0;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .card p {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0.3rem 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Smart Waste Sorting</h1>
+    </header>
+
+    <div class="content-wrapper">
+        <!-- LEFT: Stats Panel -->
+        <div class="stats-pannel">
+            <div class="stats">
+                <div class="card">
+                    <h3>Bins Full</h3>
+                    <p>{{ fill_level }}%</p>
+                </div>
+                <div class="card">
+                    <h3>Recycling Sorted</h3>
+                    <p>{{ total_items }}</p>
+                </div>
+                <div class="card">
+                    <h3>Recycling Rate</h3>
+                    <p>{{ recycle_rate }}%</p>
+                </div>
+                <div class="card">
+                    <h3>Food Waste Diverted</h3>
+                    <p>{{ food_weight }} kg</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Video + Category -->
+        <div class="main-layout">
+            <div class="video-wrapper">
+                <img src="{{ url_for('video_frame') }}" alt="Sorting Station Camera">
+            </div>
+
+            <!-- CATEGORY BADGE -->
+            <div class="detected-category 
+                {% if category == 'Trash' %}detected-trash
+                {% elif category == 'Recycle' %}detected-recycle
+                {% elif category == 'Food Waste' %}detected-food
+                {% endif %}">
+                {{ category }}
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        HackMIT 2025
+    </footer>
+</body>
+</html>
