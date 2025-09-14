@@ -10,8 +10,6 @@ def generate_frames():
     while True:
         if hasattr(cameraController, "latest_frame") and cameraController.latest_frame is not None:
             frame = cameraController.latest_frame.copy()
-
-            # Encode frame to JPEG
             ret, buffer = cv2.imencode('.jpg', frame)
             frame_bytes = buffer.tobytes()
 
@@ -25,7 +23,6 @@ def index():
 @app.route('/category')
 def get_category():
     status = servoController.status
-
     if status == "trash":
         category = "Trash"
     elif status == "recycle":
@@ -34,13 +31,13 @@ def get_category():
         category = "Food Waste"
     else:
         category = "None"
-
     return jsonify({"category": category})
 
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 if __name__ == "__main__":
     servoController = ServoController()
