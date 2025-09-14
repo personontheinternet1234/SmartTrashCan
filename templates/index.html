@@ -197,10 +197,8 @@
             const data = await response.json();
             const badge = document.getElementById("category-badge");
 
-            // Update text
             badge.textContent = data.category;
 
-            // Reset classes
             badge.className = "detected-category";
             if (data.category === "Trash") badge.classList.add("detected-trash");
             else if (data.category === "Recycle") badge.classList.add("detected-recycle");
@@ -210,10 +208,8 @@
             console.error("Failed to fetch category", err);
         }
     }
-
-    // Poll every second
-    setInterval(updateCategory, 1000);
-    updateCategory(); // run immediately once
+    setInterval(updateCategory, 50);
+    updateCategory();
     </script>
 
     <footer>
