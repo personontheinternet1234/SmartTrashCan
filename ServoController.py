@@ -28,14 +28,14 @@ class ServoController:
     def updatePlate(self):
         if self.status == "trash":
             self.setAngle(self.neutralAngle + self.angleOffset, 0)
-            self.setAngle(self.neutralAngle - self.angleOffset, 1)
+            self.setAngle(self.neutralAngle + self.angleOffset, 1)
             self.setAngle(self.neutralAngle - self.angleOffset, 2)
         elif self.status == "recycle":
             self.setAngle(self.neutralAngle - self.angleOffset, 0)
             self.setAngle(self.neutralAngle + self.angleOffset, 1)
-            self.setAngle(self.neutralAngle - self.angleOffset, 2)
+            self.setAngle(self.neutralAngle + self.angleOffset, 2)
         elif self.status == "food":
-            self.setAngle(self.neutralAngle - self.angleOffset, 0)
+            self.setAngle(self.neutralAngle + self.angleOffset, 0)
             self.setAngle(self.neutralAngle - self.angleOffset, 1)
             self.setAngle(self.neutralAngle + self.angleOffset, 2)
         elif self.status == "none":
