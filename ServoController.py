@@ -49,13 +49,15 @@ class ServoController:
             with open(self.filename, "w") as f:
                 f.write(str(self.disposals))
         elif self.status == "recycle":
-            self.setAngle(self.neutralAngle - self.angleOffset, 0)
-            self.setAngle(self.neutralAngle, 1)
-            self.setAngle(self.neutralAngle + self.angleOffset, 2)
+            # self.setAngle(self.neutralAngle - self.angleOffset, 0)
+            # self.setAngle(self.neutralAngle, 1)
+            # self.setAngle(self.neutralAngle + self.angleOffset, 2)
+            ...
         elif self.status == "food":
-            self.setAngle(self.neutralAngle, 0)
-            self.setAngle(self.neutralAngle + self.angleOffset, 1)
-            self.setAngle(self.neutralAngle - self.angleOffset, 2)
+            # self.setAngle(self.neutralAngle, 0)
+            # self.setAngle(self.neutralAngle + self.angleOffset, 1)
+            # self.setAngle(self.neutralAngle - self.angleOffset, 2)
+            ...
         elif self.status == "none":
             # no need to do anything
             self.setAngle(self.neutralAngle, 0)
