@@ -35,7 +35,10 @@ def get_category():
 
 @app.route('/disposals')
 def get_disposals():
-    return jsonify({"disposals": servoController.disposals})
+    with open(servoController.filename, "r") as f:
+        disposals = (int)(f.read().strip())
+
+    return jsonify({"disposals": disposals})
 
 @app.route('/video_feed')
 def video_feed():
