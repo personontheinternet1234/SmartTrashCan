@@ -1,3 +1,4 @@
 edgetpu_runtime/*
 model_edgetpu.tflite
 labels.txt
+venv/*
